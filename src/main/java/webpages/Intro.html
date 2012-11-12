@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org">
+    <body>
+        <wicket:extend>
+            <center>
+                <h1>Praktikum: 2012 WS</h1>
+                <h2>Name: Ifraimov David</h2>
+                <h2>Titel: Validierung und Erstellung von Rechnungen mit Apache Wicket</h2>
+                <p style="font-weight: bold;">In diesem Praktikum geht es um Webapplikationen wo Rechnungen zwischen
+                    Unternehmen ausgetauscht werden und damit die Rechnungen korrekt abgesendet werden, müssen
+                    sie vorher validiert werden. Als Technologie benutzen wir Apache Wicket, ein Webapplication-Framework. </p>
+
+                <wicket:link>     
+                    <p style="font-weight: bold;">Um die Applikation auszuprobieren, klicken sie oben auf Rechnung oder <a href="InvoiceForm.html">hier</a> </p>
+                </wicket:link>
+            </center>
+            <h1>1. Validation</h1>
+            <p>Unten sieht man das Modell zur  Implementierung der Validation einer Rechnung.</p>
+            <wicket:link>
+                <img src="images/praktikum.png" />
+            </wicket:link>
+            <h2>Einfügen einer neuen Regel zum Validieren in wenigen Schritten:</h2>
+           
+                <ul>
+                    <li>1. Man geht in die Rules.js und gibt die neue Methode ein: z.B.: steuerRule()</li>
+                    <br />
+                    <li>2. Ebenfalls in der Rules.js setzt man die Parameter für die steuer und ganz oben 
+                    definiert man ein neues steuerelement, var steuer.</li>
+                    <br />
+                    <li>3. usw...</li>
+                    
+                </ul>
+         
+
+        </wicket:extend> 
+    </body>
+</html>
