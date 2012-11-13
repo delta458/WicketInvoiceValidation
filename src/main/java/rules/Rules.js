@@ -44,9 +44,9 @@ function detailsRule(){
 }
 
 function taxRule(){
-    if(tax == 10){
+    if(tax == 10 || tax == null){
         if(recipient == "POST AG"){
-            errorMessages.push("error.tax");
+            errorMessages.push("error.tax.recipientIsPOST_AG");
         }
     }
 }

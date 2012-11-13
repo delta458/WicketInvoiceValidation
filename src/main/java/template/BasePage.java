@@ -27,7 +27,7 @@ public abstract class BasePage extends WebPage {
         add(new HeaderPanel("headerpanel", "Creating, validating invoices and converting them to XML!"));
         add(new BookmarkablePageLink<Void>("intro", Intro.class));
         add(new BookmarkablePageLink<Void>("rechnung", InvoiceForm.class));
-        add(new FooterPanel("footerpanel", "Freifachpraktikum, Ifraimov David, e0726371"));
+        add(new FooterPanel("footerpanel", "Praktikum in Wirtschaftsinformatik, Ifraimov David - e0726371"));
     }
 
     public String getPageTitle() {
