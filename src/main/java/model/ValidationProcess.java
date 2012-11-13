@@ -6,10 +6,7 @@ import java.io.IOException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
-import sun.org.mozilla.javascript.internal.Context;
-import sun.org.mozilla.javascript.internal.Function;
-import sun.org.mozilla.javascript.internal.NativeArray;
-import sun.org.mozilla.javascript.internal.Scriptable;
+import org.mozilla.javascript.*;
 
 /**
  * This class initiates the validation process. As an input it takes the
@@ -44,7 +41,7 @@ public class ValidationProcess {
             /*
              * 1. Read the javascript file
              */
-            String inputFile = readFile("C:\\Users\\Dave\\Documents\\NetBeansProjects\\Invoice2XML\\src\\java\\rules\\" + filename);
+            String inputFile = readFile("C:\\Users\\Dave\\Documents\\NetBeansProjects\\invoice\\src\\main\\java\\rules\\" + filename);
 
             /*
              * 2. Initialize Rhino and evaluate
