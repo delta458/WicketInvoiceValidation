@@ -1,58 +1,36 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package model;
 
 import java.io.Serializable;
-/**
- *
- * @author Dave
- */
-public class Invoice implements Serializable {
 
-  
-    private String details;
-    private String tax;
-    private String recipient;
-    private double price;
+public class Invoice implements Serializable{
 
-    public String getDetails() {
-        return details;
+    private Adresse adresse;
+    private Double betrag;
+    private Double Ust;
+    private String zweck;
+
+    public Adresse getAdresse() {
+        return adresse;
     }
-
-    public void setDetails(String details) {
-        //check if details are less than 200 characters
-        this.details = details;
-
+    public void setAdresse(Adresse adresse) {
+        this.adresse = adresse;
     }
-
-    public String getTax() {
-        return tax;
+    public Double getBetrag() {
+        return betrag;
     }
-
-    public void setTax(String tax) {
-        this.tax = tax;
+    public void setBetrag(Double betrag) {
+        this.betrag = betrag;
     }
-
-    public String getRecipient() {
-        return recipient;
+    public Double getUst() {
+        return Ust;
     }
-
-    public void setRecipient(String recipient) {
-        this.recipient = recipient;
+    public void setUst(Double ust) {
+        Ust = ust;
     }
-
-    public double getPrice() {
-        return price;
+    public String getZweck() {
+        return zweck;
     }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    @Override
-    public String toString() {
-        return "<u>Invoice</u>: " + "\n   Details: " + details + "\n   Tax: " + tax + "\n   Recipient: " + recipient + "\n   Price: " + price;
+    public void setZweck(String zweck) {
+        this.zweck = zweck;
     }
 }

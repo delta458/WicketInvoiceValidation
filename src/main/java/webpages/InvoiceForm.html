@@ -7,26 +7,29 @@
             <div wicket:id="feedback">[[ feedback will be given here]]</div>
             <form wicket:id="inputForm">
                 <p>
-                    <label for="Recipient">Recipient</label>
-                    <input wicket:id="Recipient" id="Recipient" type="text" size="40"/>
+                    <label for="AdrName">Adresse</label>
+                    <input wicket:id="Adresse.Name" id="AdrName" type="text" size="40"/>
+                </p>
+                <fieldset>
+                    <legend> Ort </legend>
+                        <label for="OrtName">Ortsname</label>
+                        <input wicket:id="Adresse.Ort.Name" id="OrtName" type="text" size="40"/>
+                        <label for="Plz">Postleitzahl</label>
+                        <input wicket:id="Adresse.Ort.Plz" id="Plz" type="text" size="40"/>
+                </fieldset>
+                <p>
+                    <label for="Details">Zweck</label>
+                    <input wicket:id="Zweck" id="Details" type="text" size="40"/>
                 </p>
                 <p>
-                    <label for="Details">Details</label>
-                    <input wicket:id="Details" id="Details" type="text" size="40"/>
+                    <label for="Price">Betrag</label>
+                    <input wicket:id="Betrag" id="Price" type="text" size="40"/>
                 </p>
                 <p>
-                    <label for="Price">Price</label>
-                    <input wicket:id="Price" id="Price" type="text" size="40"/>
-                </p>
-                <p>
-                    <label for="Tax">Tax</label>
-                    <span valign="top" wicket:id="Tax" id="Tax">
-                        <input type="radio">10%</input>
-                        <input type="radio">20%</input>
-                    </span>
+                    <label for="Tax">Ust</label>
+                    <input wicket:id="Ust" id="Tax" type="text" size="40"/>
                 </p>
                 <input type="submit" value="Send" />
-                <!-- A NICE TUTORIAL: http://www.devproof.org/article/Apache_Wicket_-_Best_practices_german-->
             </form>
         </wicket:extend> 
     </body>

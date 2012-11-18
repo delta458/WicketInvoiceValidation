@@ -5,15 +5,15 @@
 package webpages;
 
 import java.util.Arrays;
-import java.util.List;
 import model.Invoice;
 import model.ValidationProcess;
+import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.head.JavaScriptReferenceHeaderItem;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.RadioChoice;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.Model;
+import org.apache.wicket.request.resource.JavaScriptResourceReference;
 import template.BasePage;
 import template.ErrorClassAppender;
 
@@ -25,15 +25,20 @@ import template.ErrorClassAppender;
  */
 public final class InvoiceForm extends BasePage {
 
-    static final List<String> NUMBERS = Arrays.asList("10", "20");
     Invoice r = new Invoice();
-    
+    private static final JavaScriptResourceReference RULES_JS = new JavaScriptResourceReference(InvoiceForm.class, "Rules.js");
+
+    @Override
+    public void renderHead(IHeaderResponse response) {
+        response.render(JavaScriptReferenceHeaderItem.forReference(RULES_JS));
+    }
+
     /**
      * Im Konstruktor erfolgt die benötigte Initialisierung der Komponenten für
      * das InvoiceForm.
      */
     public InvoiceForm() {
-        
+
         setPageTitle("Invoice-Form");
 
         final FeedbackPanel feedback = new FeedbackPanel("feedback");
@@ -41,23 +46,24 @@ public final class InvoiceForm extends BasePage {
         add(feedback);
 
         CompoundPropertyModel<Invoice> formModel = new CompoundPropertyModel<Invoice>(r);
-
         /*
          * Add Behaviours to Textfields. Needed for Error Highlighting.
          */
-        final TextField<String> recipient = new TextField<String>("Recipient");
+        final TextField<String> recipient = new TextField<String>("Adresse.Name");
         recipient.add(new ErrorClassAppender());
-        final TextField<String> details = new TextField<String>("Details");
-        details.add(new ErrorClassAppender());
-        final TextField<Double> price = new TextField<Double>("Price");
+        final TextField<String> statename = new TextField<String>("Adresse.Ort.Name");
+        statename.add(new ErrorClassAppender());
+        final TextField<String> plz = new TextField<String>("Adresse.Ort.Plz");
+        plz.add(new ErrorClassAppender());
+
+        final TextField<String> details = new TextField<String>("Zweck");
+        recipient.add(new ErrorClassAppender());
+        final TextField<Double> price = new TextField<Double>("Betrag");
         price.add(new ErrorClassAppender());
-   
-        final RadioChoice<String> rc = new RadioChoice<String>("Tax", NUMBERS).setSuffix("");
-        rc.setLabel(new Model<String>("number"));
-        rc.add(new ErrorClassAppender());
+        final TextField<Double> tax = new TextField<Double>("Ust");
+        tax.add(new ErrorClassAppender());
 
         Form<Invoice> form = new Form("inputForm", formModel) {
-            
             //onSubmit wird nur benötigt wenn man zusätzlich ausser dem submitten (Objekt füllen) noch etwas machen will.
             @Override
             public void onSubmit() {
@@ -69,31 +75,34 @@ public final class InvoiceForm extends BasePage {
                 ValidationProcess vp = new ValidationProcess();
                 vp.validate("Rules.js", r);
 
-                String[] splittedP = Arrays.copyOf(vp.geterrorMessages(),vp.geterrorMessages().length, String[].class);
-               
+                String[] splittedP = Arrays.copyOf(vp.geterrorMessages(), vp.geterrorMessages().length, String[].class);
+
                 for (int i = 0; i < splittedP.length; i++) {
-                    
+
                     //check for elementnames
+                    //TODO: Fragen: Soll auch das automatisiert werden?
                     if (splittedP[i].contains("error.details")) {
                         details.error(getString(splittedP[i]));
                     }
                     if (splittedP[i].contains("error.price")) {
-                         price.error(getString(splittedP[i]));
+                        price.error(getString(splittedP[i]));
                     }
                     if (splittedP[i].contains("error.recipient")) {
-                         recipient.error(getString(splittedP[i]));
+                        recipient.error(getString(splittedP[i]));
                     }
                     if (splittedP[i].contains("error.tax")) {
-                         rc.error(getString(splittedP[i]));
+                        tax.error(getString(splittedP[i]));
                     }
                 }
             }
         };
 
         form.add(recipient);
+        form.add(statename);
+        form.add(plz);
         form.add(details);
         form.add(price);
-        form.add(rc);
+        form.add(tax);
 
         add(form);
         form.setOutputMarkupId(true);

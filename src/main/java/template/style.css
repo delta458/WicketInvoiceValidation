@@ -11,7 +11,11 @@ body {
 	padding: 10px 10px 10px 10px;
 	margin: 10px 10px 10px 10px;
 }
-
+fieldset { 
+           border: 2px solid #C5D8E1; 
+           border-radius: 6px; 
+           background: white; 
+} 
 h1,h2,h3,h4,h5,h6,h7,h8 {
 	color: #E9601A;
 }
