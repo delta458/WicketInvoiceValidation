@@ -1,6 +1,6 @@
 package model;
 
-import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.beans.IntrospectionException;
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,10 +14,10 @@ import org.mozilla.javascript.*;
 
 /**
  * This class initiates the validation process. As an input it takes the
- * Rules.js where the rules are defined and an Invoice_OLD i, a plain java object.
- * Then it validates the values of the Invoice_OLD i based on the rules in Rules.js.
- * If there are any errors, they will be saved into a Set or List. That way,
- * wicket can take those errors and output them. This happens in the
+ * Rules.js where the rules are defined and an Invoice_OLD i, a plain java
+ * object. Then it validates the values of the Invoice_OLD i based on the rules
+ * in Rules.js. If there are any errors, they will be saved into a Set or List.
+ * That way, wicket can take those errors and output them. This happens in the
  * InvoiceForm.java.
  *
  * @author Dave, e0726371
@@ -33,8 +33,8 @@ public class ValidationProcess {
 
     /**
      * The Method reads a JavaScript document, where rules for Validation are
-     * definied. Then it validates the bean (Invoice_OLD i) according to the rules
-     * in the JavaScript file.
+     * definied. Then it validates the bean (Invoice_OLD i) according to the
+     * rules in the JavaScript file.
      *
      * @param filename is the JavaScript document that contains the rules
      * @param i is the Invoice_OLD that will be validated
@@ -55,7 +55,6 @@ public class ValidationProcess {
             scope = cx.initStandardObjects();
             //evaluate: The inputFile will be associated with the scope
             cx.evaluateString(scope, inputFile, "<cmd>", 1, null);
-
 
             /*
              * 3. set the local variables of the javascript file to the value of the invoice i
@@ -94,84 +93,32 @@ public class ValidationProcess {
     }
 
     /**
-     * setVariables() sets the local javascript variables to the values of the
-     * invoice that was filled in the form. Scope.get() gets the Objects from
+     * setVariables() generates a json object from the given Invoice i and maps
+     * it to an javascript "invoice" variable. Scope.get() gets the Objects from
      * the javascript file and scope.put() updates to objects according to the
      * values of your invoice.
      *
-     * @param i is the Invoice_OLD
+     * @param i is the Invoice
      */
-    private void setVariables(Invoice i) throws IOException, IllegalAccessException, IntrospectionException, IllegalArgumentException, InvocationTargetException {
-
-        Gson gson = new Gson();
-        String json = gson.toJson(i);
-        System.out.println("JSON CONTAINS: " + json);
-        Object a = scope.get("invoice", scope);
-        a = json;
-      
-        scope.put("invoice", scope, a);
-        
-        Object ii = scope.get("invoice", scope);
-        System.out.println("CONTEXT STRING : " + Context.toString(ii)); 
-        System.out.println("SCoPE: " + scope.get("invoice", scope).toString());
-
+    private void setVariables(Invoice i) throws IOException, IllegalAccessException, IntrospectionException, IllegalArgumentException, InvocationTargetException, InstantiationException, ClassNotFoundException {
+        String json = new GsonBuilder().serializeNulls().create().toJson(i);
+      //  json = json.replaceAll("null", "\"\""); //Turns a JSON null into Javascript null
+        System.out.println("JSON CONTAINTS: " + json);
+        scope.put("invoice", scope, json);
+        Function eval = (Function) scope.get("evaluation", scope);
+        eval.call(cx, scope, scope, null);
     }
 
-//    private void createInvoiceFile(Invoice_OLD i) throws IOException, IllegalAccessException, IntrospectionException, IllegalArgumentException, InvocationTargetException {
-//        URL url = getClass().getResource("..\\rules\\Invoice_OLD.js");
-//        //EINLESEN der Invoice_OLD.js
-//        String inv = readFile("Invoice_OLD.js");
-//        System.out.println("INVOIC JS CONTAINS: " + inv);
-//        if (inv.isEmpty()) {
-//            BufferedWriter out = new BufferedWriter(new FileWriter(new File(url.getPath())), 32768);
-//            Scriptable scopea = Context.enter().initStandardObjects();
-//
-//            System.out.println("INVOICE: " + i.toString());
-//            // Reflection: go through the invoice.java and generate the Fieldnames
-//            Class<?> c = Invoice_OLD.class;
-//
-//            for (int j = 0; j < c.getDeclaredFields().length; j++) {
-//                Field f = c.getDeclaredFields()[j];
-//                f.setAccessible(true);
-//                String fieldName = f.getName();
-//                scopea.put(fieldName, scopea, null);
-//                System.out.println("IDS-ID: " + scopea.getIds()[j]);
-//                out.write("var " + scopea.getIds()[j] + ";\n");
-//            }
-//
-//            out.close();
-//
-//            for (int j = 0; j < c.getDeclaredFields().length; j++) {
-//                Field f = c.getDeclaredFields()[j];
-//                f.setAccessible(true);
-//                String fieldName = f.getName();
-//                Object a = scopea.get(fieldName, scope);
-//
-//                for (PropertyDescriptor pd : Introspector.getBeanInfo(c).getPropertyDescriptors()) {
-//                    if (pd.getReadMethod() != null && !"class".equals(pd.getName())) {
-//                        System.out.println(pd.getReadMethod().invoke(i));
-//                        a = new PropertyDescriptor(fieldName, Invoice_OLD.class).getReadMethod().invoke(i);
-//                        scopea.put(fieldName, scope, a);
-//                    }
-//                }
-//           }
-//        }
-
-        /**
-         * callFunctions() calls the callFunctions() Method inside the
-         * javascript file. Returning errors will be saved in the errorMessages
-         * String.
-         */
+    /**
+     * callFunctions() calls the callFunctions() Method inside the javascript
+     * file. Returning errors will be saved in the errorMessages String.
+     */
     private void callFunctions() {
-        Object functionArgs[] = {}; //no arguments are needed. SEE .js file
-
         Function callFunctions = (Function) scope.get("callFunctions", scope);
-        Object result = callFunctions.call(cx, scope, scope, functionArgs);
-        
+        Object result = callFunctions.call(cx, scope, scope, null);
         NativeArray arr = (NativeArray) result;
         errorMessages = new Object[(int) arr.getLength()];
         for (Object o : arr.getIds()) {
-            System.out.println("OBJECT RESULT CONTAINS: " + o.toString());
             int index = (Integer) o;
             errorMessages[index] = arr.get(index, null);
         }

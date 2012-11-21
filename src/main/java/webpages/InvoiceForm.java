@@ -49,19 +49,18 @@ public final class InvoiceForm extends BasePage {
         /*
          * Add Behaviours to Textfields. Needed for Error Highlighting.
          */
-        final TextField<String> recipient = new TextField<String>("Adresse.Name");
-        recipient.add(new ErrorClassAppender());
-        final TextField<String> statename = new TextField<String>("Adresse.Ort.Name");
-        statename.add(new ErrorClassAppender());
-        final TextField<String> plz = new TextField<String>("Adresse.Ort.Plz");
-        plz.add(new ErrorClassAppender());
-
-        final TextField<String> details = new TextField<String>("Zweck");
-        recipient.add(new ErrorClassAppender());
-        final TextField<Double> price = new TextField<Double>("Betrag");
-        price.add(new ErrorClassAppender());
-        final TextField<Double> tax = new TextField<Double>("Ust");
-        tax.add(new ErrorClassAppender());
+        final TextField<String> adresseName = new TextField<String>("Adresse.Name");
+        adresseName.add(new ErrorClassAppender());
+        final TextField<String> adresseOrtName = new TextField<String>("Adresse.Ort.Name");
+        adresseOrtName.add(new ErrorClassAppender());
+        final TextField<String> adresseOrtPlz = new TextField<String>("Adresse.Ort.Plz");
+        adresseOrtPlz.add(new ErrorClassAppender());
+        final TextField<String> zweck = new TextField<String>("Zweck");
+        zweck.add(new ErrorClassAppender());
+        final TextField<Double> betrag = new TextField<Double>("Betrag");
+        betrag.add(new ErrorClassAppender());
+        final TextField<Double> ust = new TextField<Double>("Ust");
+        ust.add(new ErrorClassAppender());
 
         Form<Invoice> form = new Form("inputForm", formModel) {
             //onSubmit wird nur benötigt wenn man zusätzlich ausser dem submitten (Objekt füllen) noch etwas machen will.
@@ -70,39 +69,50 @@ public final class InvoiceForm extends BasePage {
                 //  doSomething
             }
 
+            /**
+             * This method will be called when validating the formModel. A
+             * custom java class called ValidationProcess will be initialised
+             * which takes a javascript with Rules and validates it against the
+             * Invoice r. If there is an error, the proper String key of the
+             * error will be added to the feedbackMessage Panel. The keys are
+             * defined in a properties file.
+             */
             @Override
             public void onValidateModelObjects() {
                 ValidationProcess vp = new ValidationProcess();
                 vp.validate("Rules.js", r);
+                String[] splitted = {""};
+                if (vp.geterrorMessages() != null) {
+                    splitted = Arrays.copyOf(vp.geterrorMessages(), vp.geterrorMessages().length, String[].class);
+                }
 
-                String[] splittedP = Arrays.copyOf(vp.geterrorMessages(), vp.geterrorMessages().length, String[].class);
-
-                for (int i = 0; i < splittedP.length; i++) {
-
-                    //check for elementnames
-                    //TODO: Fragen: Soll auch das automatisiert werden?
-                    if (splittedP[i].contains("error.details")) {
-                        details.error(getString(splittedP[i]));
-                    }
-                    if (splittedP[i].contains("error.price")) {
-                        price.error(getString(splittedP[i]));
-                    }
-                    if (splittedP[i].contains("error.recipient")) {
-                        recipient.error(getString(splittedP[i]));
-                    }
-                    if (splittedP[i].contains("error.tax")) {
-                        tax.error(getString(splittedP[i]));
+                for (int i = 0; i < splitted.length; i++) {
+                    System.out.println("ERROR MESSAGE CONTAINS: " + splitted[i]);
+                    if (splitted[i].contains("error.adresse.ort.name")) {
+                        adresseOrtName.error(getString(splitted[i]));
+                    } else if (splitted[i].contains("error.adresse.ort.plz")) {
+                        adresseOrtPlz.error(getString(splitted[i]));
+                    } else if (splitted[i].contains("error.adresse")) {
+                        adresseName.error(getString(splitted[i]));
+                    } else if (splitted[i].contains("error.zweck")) {
+                        zweck.error(getString(splitted[i]));
+                    } else if (splitted[i].contains("error.betrag")) {
+                        betrag.error(getString(splitted[i]));
+                    } else if (splitted[i].contains("error.ust")) {
+                        ust.error(getString(splitted[i]));
+                    } else {
+                        error(splitted[i]);
                     }
                 }
             }
         };
 
-        form.add(recipient);
-        form.add(statename);
-        form.add(plz);
-        form.add(details);
-        form.add(price);
-        form.add(tax);
+        form.add(adresseName);
+        form.add(adresseOrtName);
+        form.add(adresseOrtPlz);
+        form.add(zweck);
+        form.add(betrag);
+        form.add(ust);
 
         add(form);
         form.setOutputMarkupId(true);

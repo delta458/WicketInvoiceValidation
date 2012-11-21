@@ -6,7 +6,7 @@ public class Invoice implements Serializable{
 
     private Adresse adresse;
     private Double betrag;
-    private Double Ust;
+    private Double ust;
     private String zweck;
 
     public Adresse getAdresse() {
@@ -15,6 +15,12 @@ public class Invoice implements Serializable{
     public void setAdresse(Adresse adresse) {
         this.adresse = adresse;
     }
+    public String getZweck() {
+        return zweck;
+    }
+    public void setZweck(String zweck) {
+        this.zweck = zweck;
+    }
     public Double getBetrag() {
         return betrag;
     }
@@ -22,15 +28,9 @@ public class Invoice implements Serializable{
         this.betrag = betrag;
     }
     public Double getUst() {
-        return Ust;
+        return ust;
     }
     public void setUst(Double ust) {
-        Ust = ust;
-    }
-    public String getZweck() {
-        return zweck;
-    }
-    public void setZweck(String zweck) {
-        this.zweck = zweck;
+        this.ust = ust;
     }
 }
