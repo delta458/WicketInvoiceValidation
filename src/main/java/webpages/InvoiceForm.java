@@ -47,16 +47,22 @@ public final class InvoiceForm extends BasePage {
          */
         final TextField<String> adresseName = new TextField<String>("Adresse.Name");
         adresseName.add(new ErrorClassAppender());
+        adresseName.setConvertEmptyInputStringToNull(false);
         final TextField<String> adresseOrtName = new TextField<String>("Adresse.Ort.Name");
         adresseOrtName.add(new ErrorClassAppender());
+        adresseOrtName.setConvertEmptyInputStringToNull(false);
         final TextField<String> adresseOrtPlz = new TextField<String>("Adresse.Ort.Plz");
         adresseOrtPlz.add(new ErrorClassAppender());
+        adresseOrtPlz.setConvertEmptyInputStringToNull(false);
         final TextField<String> zweck = new TextField<String>("Zweck");
         zweck.add(new ErrorClassAppender());
+        zweck.setConvertEmptyInputStringToNull(false);
         final TextField<Double> betrag = new TextField<Double>("Betrag");
         betrag.add(new ErrorClassAppender());
+        betrag.setConvertEmptyInputStringToNull(false);
         final TextField<Double> ust = new TextField<Double>("Ust");
         ust.add(new ErrorClassAppender());
+        ust.setConvertEmptyInputStringToNull(false);
 
         Form<Invoice> form = new Form("inputForm", formModel) {
             //onSubmit wird nur benötigt wenn man zusätzlich ausser dem submitten (Objekt füllen) noch etwas machen will.

@@ -5,7 +5,7 @@ var errorMessages = [];
 
 //Adressname is required
 function adresseNameRule(){
-        if(i.adresse.name == null){
+        if(i.adresse.name == ""){
             errorMessages.push("error.adresse.name.required");
         }
 }

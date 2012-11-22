@@ -100,8 +100,9 @@ public class ValidationProcess {
      * @param i is the Invoice
      */
     private void setVariables(Invoice i) throws IOException, IllegalAccessException, IntrospectionException, IllegalArgumentException, InvocationTargetException, InstantiationException, ClassNotFoundException, NoSuchMethodException {
-        invokeSetters(i);  //If you want to disable JSON HACK, please comment this line
+   //     invokeSetters(i);  //If you want to disable JSON HACK, please comment this line
         String json = new GsonBuilder().serializeNulls().create().toJson(i);
+        System.out.println("JSON containts " + json);
         scope.put("invoice", scope, json);
         Function eval = (Function) scope.get("evaluation", scope);
         eval.call(cx, scope, scope, null);
