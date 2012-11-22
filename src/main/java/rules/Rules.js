@@ -23,7 +23,7 @@ function adresseOrtNameRule(){
             }      
         }
     } catch (e){
-    //    errorMessages.push("JS Error: " + e + "!"); //COMMENTED BECAUSE OPTIONAL
+    //    errorMessages.push("error.adresse.ort.name.required");  //COMMENTED BECAUSE OPTIONAL
     }
 }
 

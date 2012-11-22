@@ -5,7 +5,9 @@ import java.beans.IntrospectionException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
@@ -41,7 +43,6 @@ public class ValidationProcess {
      */
     public void validate(String filename, Invoice i) {
         try {
-
             /*
              * 1. Read the javascript file
              */
@@ -55,7 +56,6 @@ public class ValidationProcess {
             scope = cx.initStandardObjects();
             //evaluate: The inputFile will be associated with the scope
             cx.evaluateString(scope, inputFile, "<cmd>", 1, null);
-
             /*
              * 3. set the local variables of the javascript file to the value of the invoice i
              */
@@ -79,13 +79,12 @@ public class ValidationProcess {
      * file.
      */
     private String readFile(String filename) throws IOException {
-        URL url = getClass().getResource("..\\webpages\\" + filename);
+        URL url = getClass().getResource("..\\rules\\" + filename);
         File file = new File(url.getPath());
         FileInputStream stream = new FileInputStream(file);
         try {
             FileChannel fc = stream.getChannel();
             MappedByteBuffer bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
-            /* Instead of using default, pass in a decoder. */
             return Charset.defaultCharset().decode(bb).toString();
         } finally {
             stream.close();
@@ -100,10 +99,9 @@ public class ValidationProcess {
      *
      * @param i is the Invoice
      */
-    private void setVariables(Invoice i) throws IOException, IllegalAccessException, IntrospectionException, IllegalArgumentException, InvocationTargetException, InstantiationException, ClassNotFoundException {
+    private void setVariables(Invoice i) throws IOException, IllegalAccessException, IntrospectionException, IllegalArgumentException, InvocationTargetException, InstantiationException, ClassNotFoundException, NoSuchMethodException {
+        invokeSetters(i);  //If you want to disable JSON HACK, please comment this line
         String json = new GsonBuilder().serializeNulls().create().toJson(i);
-      //  json = json.replaceAll("null", "\"\""); //Turns a JSON null into Javascript null
-        System.out.println("JSON CONTAINTS: " + json);
         scope.put("invoice", scope, json);
         Function eval = (Function) scope.get("evaluation", scope);
         eval.call(cx, scope, scope, null);
@@ -122,6 +120,66 @@ public class ValidationProcess {
             int index = (Integer) o;
             errorMessages[index] = arr.get(index, null);
         }
+    }
+
+    private void invokeSetters(Object o) throws IllegalArgumentException, IllegalAccessException, ClassNotFoundException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+        System.out.println("INVOKING THE OBJECT " + o.getClass().toString());
+        for (Field f : o.getClass().getDeclaredFields()) {
+            System.out.println("NOW IN THE FIELD: " + f.getName());
+            f.setAccessible(true);
+            Object obj = null;
+            if (isUserDefined(f.getType()) && f.get(o) == null) {
+                System.out.println("FIELD is USER DEFINED AND NULL");
+                Class c = Class.forName(f.getType().getName());
+                System.out.println("CLASS IS " + c.getName());
+                obj = c.getConstructor().newInstance();
+                System.out.println("GOING INSIDE " + obj.toString() + " NOW.");
+                invokeSetters(obj);
+            }
+            if (obj != null) {
+                Method setter = getSetterMethod(o, f);
+                System.out.println("IM IN PARENT OBJECT " + o + " AND INVOKING MTEHOD " + setter.getName() + " WITH PARAMETER " + obj.toString());
+                setter.invoke(o, obj);
+                System.out.println("METHOD WAS INVOKED");
+            }
+        }
+    }
+
+    public boolean isUserDefined(Class o) {
+        if (o.isAssignableFrom(String.class)) {
+            return false;
+        }
+        if (o.isAssignableFrom(Double.class)) {
+            return false;
+        }
+        if (o.isAssignableFrom(Integer.class)) {
+            return false;
+        }
+        if (o.isAssignableFrom(Boolean.class)) {
+            return false;
+        }
+        if (o.isAssignableFrom(Short.class)) {
+            return false;
+        }
+        if (o.isAssignableFrom(Float.class)) {
+            return false;
+        }
+        if (o.isAssignableFrom(Long.class)) {
+            return false;
+        }
+        return true;
+    }
+
+    private static Method getSetterMethod(Object o, Field f) {
+
+        for (Method method : o.getClass().getMethods()) {
+            String fieldname = "set" + f.getName();
+            String methodname = method.getName().toLowerCase();
+            if (fieldname.equals(methodname)) {
+                return method;
+            }
+        }
+        return null;
     }
 
     public Object[] geterrorMessages() {

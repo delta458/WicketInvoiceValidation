@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package webpages;
 
 import java.util.Arrays;
@@ -80,12 +76,11 @@ public final class InvoiceForm extends BasePage {
             @Override
             public void onValidateModelObjects() {
                 ValidationProcess vp = new ValidationProcess();
-                vp.validate("Rules.js", r);
+                vp.validate("Rules_1.js", r);
                 String[] splitted = {""};
                 if (vp.geterrorMessages() != null) {
                     splitted = Arrays.copyOf(vp.geterrorMessages(), vp.geterrorMessages().length, String[].class);
                 }
-
                 for (int i = 0; i < splitted.length; i++) {
                     System.out.println("ERROR MESSAGE CONTAINS: " + splitted[i]);
                     if (splitted[i].contains("error.adresse.ort.name")) {
