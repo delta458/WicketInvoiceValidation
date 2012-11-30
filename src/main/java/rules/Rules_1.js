@@ -52,7 +52,7 @@ function zweckRule(){
 
 //ust is optional
 function ustRule(){
-        if(i.ust > 30){
+        if(i.ust > 20){
             errorMessages.push("error.ust.higher");
         }
 }
@@ -60,7 +60,7 @@ function ustRule(){
 function adresseNameUstRule(){
         if(i.adresse.name != null){
             if(i.adresse.name == "POST AG"){
-                if(i.Ust != 10){
+                if(i.ust != 20){
                     errorMessages.push("error.ust.recipientIsPOST_AG");
                 }
             }

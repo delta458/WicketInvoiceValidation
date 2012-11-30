@@ -3,13 +3,10 @@ package webpages;
 import java.util.Arrays;
 import model.Invoice;
 import model.ValidationProcess;
-import org.apache.wicket.markup.head.IHeaderResponse;
-import org.apache.wicket.markup.head.JavaScriptReferenceHeaderItem;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.request.resource.JavaScriptResourceReference;
 import template.BasePage;
 import template.ErrorClassAppender;
 
@@ -22,12 +19,6 @@ import template.ErrorClassAppender;
 public final class InvoiceForm extends BasePage {
 
     Invoice r = new Invoice();
-    private static final JavaScriptResourceReference RULES_JS = new JavaScriptResourceReference(InvoiceForm.class, "Rules.js");
-
-    @Override
-    public void renderHead(IHeaderResponse response) {
-        response.render(JavaScriptReferenceHeaderItem.forReference(RULES_JS));
-    }
 
     /**
      * Im Konstruktor erfolgt die benötigte Initialisierung der Komponenten für
@@ -59,12 +50,6 @@ public final class InvoiceForm extends BasePage {
         ust.add(new ErrorClassAppender());
 
         Form<Invoice> form = new Form("inputForm", formModel) {
-            //onSubmit wird nur benötigt wenn man zusätzlich ausser dem submitten (Objekt füllen) noch etwas machen will.
-            @Override
-            public void onSubmit() {
-                //  doSomething
-            }
-
             /**
              * This method will be called when validating the formModel. A
              * custom java class called ValidationProcess will be initialised
@@ -78,11 +63,10 @@ public final class InvoiceForm extends BasePage {
                 ValidationProcess vp = new ValidationProcess();
                 vp.validate("Rules_1.js", r);
                 String[] splitted = {""};
-                if (vp.geterrorMessages() != null) {
-                    splitted = Arrays.copyOf(vp.geterrorMessages(), vp.geterrorMessages().length, String[].class);
+                if (vp.getErrorMessages() != null) {
+                    splitted = Arrays.copyOf(vp.getErrorMessages(), vp.getErrorMessages().length, String[].class);
                 }
                 for (int i = 0; i < splitted.length; i++) {
-                    System.out.println("ERROR MESSAGE CONTAINS: " + splitted[i]);
                     if (splitted[i].contains("error.adresse.ort.name")) {
                         adresseOrtName.error(getString(splitted[i]));
                     } else if (splitted[i].contains("error.adresse.ort.plz")) {
